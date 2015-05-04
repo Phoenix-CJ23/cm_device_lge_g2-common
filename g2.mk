@@ -14,8 +14,11 @@
 # limitations under the License.
 #
 
-# Overlays
-DEVICE_PACKAGE_OVERLAYS := $(LOCAL_PATH)/overlay
+## overlays
+# Use common overlays for all devices other than f320 and lgl22
+ifneq ($(filter d800 d801 d802 d803 l01f ls980 vs980,$(TARGET_DEVICE)),)
+    DEVICE_PACKAGE_OVERLAYS := $(LOCAL_PATH)/overlay
+endif
 
 # System properties
 -include $(LOCAL_PATH)/system_prop.mk
@@ -68,10 +71,16 @@ PRODUCT_COPY_FILES += \
 
 # Init
 PRODUCT_PACKAGES += \
-    init.g2.rc \
     init.g2.usb.rc \
-    ueventd.g2.rc \
-    fstab.g2
+    ueventd.g2.rc
+
+# Use common init and fstab for all devices other than f320 and lgl22
+# f320 and lgl22 require different versions of these for SD card access
+ifneq ($(filter d800 d801 d802 d803 l01f ls980 vs980,$(TARGET_DEVICE)),)
+    PRODUCT_PACKAGES += \
+        init.g2.rc \
+        fstab.g2
+endif
 
 PRODUCT_PACKAGES += \
     libwpa_client \
